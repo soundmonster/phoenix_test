@@ -92,10 +92,10 @@ defmodule PhoenixTest.Form do
         name = Html.attribute(textarea, "name")
         values = Enum.map_join(value_elements, "", &Html.text/1)
         form_field = Utils.name_to_map(name, values)
-        Map.merge(acc, form_field)
+        DeepMerge.deep_merge(acc, form_field)
       end)
 
-    Map.merge(form_data, input_fields)
+    DeepMerge.deep_merge(form_data, input_fields)
   end
 
   defp put_form_data_select(form_data, form) do
