@@ -71,6 +71,7 @@ defmodule PhoenixTest.Form do
     |> put_form_data(@checked_checkboxes, form)
     |> put_form_data(@pre_filled_text_inputs, form)
     |> put_form_data(@pre_filled_number_inputs, form)
+    |> put_form_data_textarea(form)
     |> put_form_data(@pre_filled_default_text_inputs, form)
     |> put_form_data_select(form)
   end
@@ -81,6 +82,20 @@ defmodule PhoenixTest.Form do
       |> Html.all(selector)
       |> Enum.map(&to_form_field/1)
       |> Enum.reduce(%{}, fn value, acc -> DeepMerge.deep_merge(acc, value) end)
+
+    DeepMerge.deep_merge(form_data, input_fields)
+  end
+
+  defp put_form_data_textarea(form_data, form) do
+    input_fields =
+      form
+      |> Html.all("textarea:not([disabled])")
+      |> Enum.reduce(%{}, fn {"textarea", _attrs, value_elements} = textarea, acc ->
+        name = Html.attribute(textarea, "name")
+        values = Enum.map_join(value_elements, "", &Html.text/1)
+        form_field = Utils.name_to_map(name, values)
+        DeepMerge.deep_merge(acc, form_field)
+      end)
 
     DeepMerge.deep_merge(form_data, input_fields)
   end
