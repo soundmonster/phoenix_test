@@ -251,6 +251,7 @@ defmodule PhoenixTest.StaticTest do
       |> assert_has("#form-data", text: "admin: off")
       |> assert_has("#form-data", text: "contact: mail")
       |> assert_has("#form-data", text: "full_form_button: save")
+      |> assert_has("#form-data", text: "notes: Prefilled notes")
     end
 
     test "raises error if trying to submit via `data-` attributes but incomplete", %{conn: conn} do

@@ -168,6 +168,7 @@ defmodule PhoenixTest.IndexLive do
 
       <label for="notes">Notes</label>
       <textarea id="notes" name="notes" rows="5" cols="33">
+      Prefilled notes
       </textarea>
 
       <button type="submit" name="full_form_button" value="save">Save Full Form</button>
