@@ -80,7 +80,9 @@ defmodule PhoenixTest.Form do
       form
       |> Html.all(selector)
       |> Enum.map(&to_form_field/1)
-      |> Enum.reduce(%{}, fn value, acc -> DeepMerge.deep_merge(acc, value) end)
+      |> Enum.reduce(%{}, fn value, acc ->
+        DeepMerge.deep_merge(acc, value, &list_concatenator_for_deep_merge/3)
+      end)
 
     DeepMerge.deep_merge(form_data, input_fields)
   end
@@ -144,5 +146,13 @@ defmodule PhoenixTest.Form do
       :no_method_input -> nil
       field -> Html.attribute(field, "value")
     end
+  end
+
+  defp list_concatenator_for_deep_merge(_key, original, override) when is_list(original) and is_list(override) do
+    original ++ override
+  end
+
+  defp list_concatenator_for_deep_merge(_key, _original, _override) do
+    DeepMerge.continue_deep_merge()
   end
 end

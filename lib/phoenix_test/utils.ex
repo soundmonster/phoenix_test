@@ -2,13 +2,17 @@ defmodule PhoenixTest.Utils do
   @moduledoc false
 
   def name_to_map(name, value) do
-    parts = Regex.scan(~r/[\w\?|-]+/, name)
+    parts = Regex.scan(~r/[\w\?|-]+|\[\]/, name)
 
     parts
     |> List.flatten()
     |> Enum.reverse()
-    |> Enum.reduce(value, fn key, acc ->
-      %{key => acc}
+    |> Enum.reduce(value, fn
+      "[]", acc ->
+        List.flatten([acc])
+
+      key, acc ->
+        %{key => acc}
     end)
   end
 
