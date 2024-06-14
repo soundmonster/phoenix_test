@@ -522,13 +522,19 @@ defmodule PhoenixTest.LiveTest do
       |> fill_in("Date", with: "2023-12-30")
       |> check("Admin")
       |> select("Elf", from: "Race")
+      |> select("Orc", from: "Race 2")
       |> choose("Email Choice")
+      |> check("Mars")
+      |> check("Tatooine")
+      |> uncheck("Mars")
       |> fill_in("Notes", with: "Woodland Elf")
       |> click_button("Save Full Form")
       |> assert_has("#form-data", text: "name: Legolas")
       |> assert_has("#form-data", text: "date: 2023-12-30")
       |> assert_has("#form-data", text: "admin: on")
       |> assert_has("#form-data", text: "race: elf")
+      |> assert_has("#form-data", text: "race_2: [orc]")
+      |> assert_has("#form-data", text: "planet: [earth, tatooine]")
       |> assert_has("#form-data", text: "contact: email")
       |> assert_has("#form-data", text: "notes: Woodland Elf")
     end
@@ -560,6 +566,7 @@ defmodule PhoenixTest.LiveTest do
       |> submit()
       |> assert_has("#form-data", text: "admin: off")
       |> assert_has("#form-data", text: "race: human")
+      |> assert_has("#form-data", text: "planet: [earth]")
       |> assert_has("#form-data", text: "contact: mail")
     end
 

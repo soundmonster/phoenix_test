@@ -12,6 +12,7 @@ defmodule PhoenixTest.Static do
   alias PhoenixTest.Link
   alias PhoenixTest.OpenBrowser
   alias PhoenixTest.Query
+  alias PhoenixTest.Utils
 
   @endpoint Application.compile_env(:phoenix_test, :endpoint)
 
@@ -157,7 +158,7 @@ defmodule PhoenixTest.Static do
 
     form_data =
       if active_form.selector == form.selector do
-        DeepMerge.deep_merge(existing_data, new_form_data)
+        Utils.deep_merge(existing_data, new_form_data)
       else
         new_form_data
       end
@@ -219,7 +220,7 @@ defmodule PhoenixTest.Static do
 
   defp submit_active_form(session, form) do
     active_form = session.active_form
-    form_data = DeepMerge.deep_merge(form.form_data, active_form.form_data)
+    form_data = Utils.deep_merge(form.form_data, active_form.form_data)
 
     session = Map.put(session, :active_form, ActiveForm.new())
 

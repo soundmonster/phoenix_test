@@ -9,6 +9,7 @@ defmodule PhoenixTest.Live do
   alias PhoenixTest.Form
   alias PhoenixTest.Html
   alias PhoenixTest.Query
+  alias PhoenixTest.Utils
 
   @endpoint Application.compile_env(:phoenix_test, :endpoint)
 
@@ -143,7 +144,7 @@ defmodule PhoenixTest.Live do
 
     form_data =
       if active_form.selector == form.selector do
-        DeepMerge.deep_merge(existing_data, new_form_data)
+        Utils.deep_merge(existing_data, new_form_data)
       else
         new_form_data
       end
@@ -170,7 +171,7 @@ defmodule PhoenixTest.Live do
         %{}
       end
 
-    form_data = DeepMerge.deep_merge(form.form_data, active_form.form_data)
+    form_data = Utils.deep_merge(form.form_data, active_form.form_data)
 
     cond do
       Form.phx_submit?(form) ->
@@ -231,7 +232,7 @@ defmodule PhoenixTest.Live do
       |> render_html()
       |> Form.find!(selector)
 
-    form_data = DeepMerge.deep_merge(form.form_data, form_data)
+    form_data = Utils.deep_merge(form.form_data, form_data)
 
     cond do
       Form.phx_submit?(form) ->

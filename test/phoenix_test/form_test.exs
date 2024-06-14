@@ -209,6 +209,19 @@ defmodule PhoenixTest.FormTest do
       assert %{"form" => %{"checkbox" => ["some_value", "another_value"]}} = form.form_data
     end
 
+    test "checkboxes, multiple, nested in weird ways" do
+      html = """
+      <form id="form">
+        <input name="form[][checkbox]" type="checkbox" value="some_value" checked />
+        <input name="form[][checkbox]" type="checkbox" value="another_value" checked />
+      </form>
+      """
+
+      form = Form.find!(html, "form")
+
+      assert %{"form" => [%{"checkbox" => "some_value"}, %{"checkbox" => "another_value"}]} = form.form_data
+    end
+
     test "checkboxes, single" do
       html = """
       <form id="form">

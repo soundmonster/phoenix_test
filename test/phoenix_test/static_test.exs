@@ -448,7 +448,7 @@ defmodule PhoenixTest.StaticTest do
       |> visit("/page/index")
       |> select(["Elf", "Dwarf"], from: "Race 2")
       |> click_button("Save Full Form")
-      |> assert_has("#form-data", text: "race_2: [elf,dwarf]")
+      |> assert_has("#form-data", text: "race_2: [elf, dwarf]")
     end
 
     test "honors empty default for multi select", %{conn: conn} do
@@ -491,6 +491,17 @@ defmodule PhoenixTest.StaticTest do
       |> check("Subscribe")
       |> click_button("Save Full Form")
       |> assert_has("#form-data", text: "subscribe?: on")
+    end
+
+    test "handle checkbox group", %{conn: conn} do
+      conn
+      |> visit("/page/index")
+      |> check("Mars")
+      |> check("Tatooine")
+      |> uncheck("Mars")
+      |> check("Venus")
+      |> click_button("Save Full Form")
+      |> assert_has("#form-data", text: "planet: [earth, tatooine, venus]")
     end
   end
 
@@ -580,6 +591,7 @@ defmodule PhoenixTest.StaticTest do
       |> submit()
       |> assert_has("#form-data", text: "admin: off")
       |> assert_has("#form-data", text: "race: human")
+      |> assert_has("#form-data", text: "planet: [earth]")
     end
 
     test "includes the first button's name and value if present", %{conn: conn} do
