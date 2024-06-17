@@ -2,10 +2,8 @@ defmodule PhoenixTest.Utils do
   @moduledoc false
 
   def name_to_map(name, value) do
-    parts = Regex.scan(~r/[\w\?|-]+|\[\]/, name)
-
-    parts
-    |> List.flatten()
+    name
+    |> name_parts()
     |> Enum.reverse()
     |> Enum.reduce(value, fn
       "[]", acc ->
@@ -14,6 +12,23 @@ defmodule PhoenixTest.Utils do
       key, acc ->
         %{key => acc}
     end)
+  end
+
+  # TODO test
+  def delete_from_map(map, name, value) do
+    case Enum.reverse(name_parts(name)) do
+      ["[]" | path] ->
+        update_in(map, Enum.reverse(path), fn list -> list -- [value] end)
+
+      _ ->
+        map
+    end
+  end
+
+  defp name_parts(name) do
+    parts = Regex.scan(~r/[\w\?|-]+|\[\]/, name)
+
+    List.flatten(parts)
   end
 
   def present?(term), do: !blank?(term)

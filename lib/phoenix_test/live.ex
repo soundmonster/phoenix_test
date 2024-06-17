@@ -120,10 +120,10 @@ defmodule PhoenixTest.Live do
   end
 
   def uncheck(session, label) do
-    session
-    |> render_html()
-    |> Field.find_hidden_uncheckbox!(label)
-    |> then(&fill_in_field_data(session, &1))
+    html = render_html(session)
+    checkbox = Field.find_checkbox!(html, label)
+    uncheckbox = Field.find_hidden_uncheckbox!(html, label)
+    fill_in_uncheck_data(session, checkbox, uncheckbox)
   end
 
   def choose(session, label) do
@@ -136,15 +136,38 @@ defmodule PhoenixTest.Live do
   defp fill_in_field_data(session, field) do
     active_form = session.active_form
     existing_data = active_form.form_data
-
-    new_form_data =
-      Field.to_form_data(field)
+    new_form_data = Field.to_form_data(field)
 
     form = Field.parent_form!(field)
 
     form_data =
       if active_form.selector == form.selector do
         Utils.deep_merge(existing_data, new_form_data)
+      else
+        new_form_data
+      end
+
+    fill_form(session, form.selector, form_data)
+  end
+
+  defp fill_in_uncheck_data(session, checkbox, uncheckbox) do
+    active_form = session.active_form
+    existing_data = active_form.form_data
+
+    new_form_data =
+      if String.ends_with?(checkbox.name, "[]") do
+        %{}
+      else
+        Field.to_form_data(uncheckbox)
+      end
+
+    form = Field.parent_form!(uncheckbox)
+
+    form_data =
+      if active_form.selector == form.selector do
+        existing_data
+        |> Utils.delete_from_map(checkbox.name, checkbox.value)
+        |> Utils.deep_merge(new_form_data)
       else
         new_form_data
       end
