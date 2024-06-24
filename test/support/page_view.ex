@@ -179,6 +179,19 @@ defmodule PhoenixTest.PageView do
         <option value="orc">Orc</option>
       </select>
 
+      <label for="planet">Planet</label>
+      <input id="planet" name="planet[]" value="" type="hidden" />
+      <div>
+        <label for="planet_earth">Earth</label>
+        <input id="planet_earth" name="planet[]" value="earth" type="checkbox" checked />
+        <label for="planet_venus">Venus</label>
+        <input id="planet_venus" name="planet[]" value="venus" type="checkbox" />
+        <label for="planet_mars">Mars</label>
+        <input id="planet_mars" name="planet[]" value="mars" type="checkbox" />
+        <label for="planet_tatooine">Tatooine</label>
+        <input id="planet_tatooine" name="planet[]" value="tatooine" type="checkbox" />
+      </div>
+
       <fieldset>
         <legend>Please select your preferred contact method:</legend>
         <div>
@@ -296,7 +309,7 @@ defmodule PhoenixTest.PageView do
   end
 
   defp render_input_data(key, value) when is_list(value) do
-    "#{key}: [#{Enum.join(value, ",")}]"
+    "#{key}: [#{Enum.join(value, ", ")}]"
   end
 
   defp render_input_data(key, value) when is_boolean(value) do

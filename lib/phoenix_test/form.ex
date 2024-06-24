@@ -80,9 +80,9 @@ defmodule PhoenixTest.Form do
       form
       |> Html.all(selector)
       |> Enum.map(&to_form_field/1)
-      |> Enum.reduce(%{}, fn value, acc -> DeepMerge.deep_merge(acc, value) end)
+      |> Enum.reduce(%{}, fn cur, acc -> Utils.deep_merge(acc, cur) end)
 
-    DeepMerge.deep_merge(form_data, input_fields)
+    Utils.deep_merge(form_data, input_fields)
   end
 
   defp put_form_data_select(form_data, form) do
@@ -94,21 +94,21 @@ defmodule PhoenixTest.Form do
 
         case {Html.all(select, "option"), multiple, Html.all(select, "option[selected]")} do
           {[], _, _} -> acc
-          {_, false, [only_selected]} -> DeepMerge.deep_merge(acc, to_form_field(select, only_selected))
-          {_, true, [_ | _] = all_selected} -> DeepMerge.deep_merge(acc, to_form_field(select, all_selected))
-          {[first | _], false, _} -> DeepMerge.deep_merge(acc, to_form_field(select, first))
-          {_, true, _} -> DeepMerge.deep_merge(acc, to_form_field(select, []))
+          {_, false, [only_selected]} -> Utils.deep_merge(acc, to_form_field(select, only_selected))
+          {_, true, [_ | _] = all_selected} -> Utils.deep_merge(acc, to_form_field(select, all_selected))
+          {[first | _], false, _} -> Utils.deep_merge(acc, to_form_field(select, first))
+          {_, true, _} -> Utils.deep_merge(acc, to_form_field(select, []))
         end
       end)
 
-    DeepMerge.deep_merge(form_data, selects)
+    Utils.deep_merge(form_data, selects)
   end
 
   def put_button_data(form, nil), do: form
 
   def put_button_data(form, %Button{} = button) do
     button_data = Button.to_form_data(button)
-    update_in(form.form_data, fn data -> DeepMerge.deep_merge(button_data, data) end)
+    update_in(form.form_data, fn data -> Utils.deep_merge(button_data, data) end)
   end
 
   defp to_form_field(element) do
